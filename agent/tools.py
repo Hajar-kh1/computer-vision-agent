@@ -1,12 +1,14 @@
-"""Agent tool registry — LLM-facing schemas + dispatcher (spec §17, §18).
+"""Agent tool registry — LLM-facing schemas + dispatcher + HTTP handlers.
 
 The chat LLM cannot touch the model or the database directly. This file
-gives it two things:
+gives it three things:
 
 1. TOOLS           — the five tool schemas the LLM reads to decide WHAT to call
                      and with WHICH arguments (pure JSON Schema — no backend
                      needed, which is why we write them first).
 2. execute_tool()  — the dispatcher that runs the matching handler for real.
+3. Handlers        — one per tool; each is a thin HTTP client for a FastAPI
+                     endpoint (spec §17: tools connected to FastAPI).
 
 Design choice — why HTTP instead of importing backend functions:
   The same tools must also work from Open WebUI, whose Functions run inside
@@ -20,14 +22,22 @@ Contract: response shapes below match docs/api.md and backend/app/schemas.py.
 
 import json
 import os
+from pathlib import Path
 from typing import Any, Callable
+
+import httpx
 
 # Base URL of the FastAPI backend (spec §29: use Docker service names in compose):
 #   local dev:      http://localhost:8000
 #   docker compose: http://backend:8000
 #   production:     https://<api-domain>
-# Overridable via env so tests can point at a test client.
+# Overridable via env so tests can point at a test client or mock server.
 BACKEND_URL = os.getenv("AGENT_BACKEND_URL", "http://localhost:8000")
+
+# Seconds to wait for a backend response. Generous for the first (cold) model
+# load in the container; the model is loaded once at startup, so steady-state
+# predictions are far below this.
+_REQUEST_TIMEOUT = 60.0
 
 # ---------------------------------------------------------------------------
 # 1. Tool schemas — the ONLY thing the LLM sees.
@@ -180,16 +190,6 @@ def execute_tool(name: str, arguments: dict[str, Any] | None = None) -> str:
 # ---------------------------------------------------------------------------
 # 3. Handlers — one per tool, each maps 1:1 to a backend endpoint.
 # ---------------------------------------------------------------------------
-# STEP 6 TODO: replace each `raise NotImplementedError` with a real httpx call
-# to BACKEND_URL + the endpoint listed in the docstring. The schemas above are
-# already final, so this step is purely mechanical:
-#
-#   def _classify_image(args: dict[str, Any]) -> dict[str, Any]:
-#       files = {"image": open(args["image_path"], "rb")}
-#       resp = httpx.post(f"{BACKEND_URL}/api/v1/predict", files=files, timeout=30)
-#       resp.raise_for_status()
-#       return resp.json()
-#
 # Endpoint mapping (docs/api.md):
 #   classify_image            -> POST /api/v1/predict
 #   get_prediction_history    -> GET  /api/v1/predictions?limit=N
@@ -197,29 +197,64 @@ def execute_tool(name: str, arguments: dict[str, Any] | None = None) -> str:
 #   get_prediction_statistics -> GET  /api/v1/stats
 #   get_model_info            -> GET  /api/v1/model
 
+def _request_json(method: str, path: str, **kwargs: Any) -> dict[str, Any]:
+    """Perform an HTTP request and return the parsed JSON body.
+
+    On a non-2xx response we re-raise as RuntimeError carrying the backend's
+    own "detail" message — the backend already formats clean errors
+    (spec §33), so the agent can show them verbatim instead of inventing a
+    reason. RuntimeError is caught by execute_tool and serialized as
+    {"error": ...}.
+    """
+    resp = httpx.request(method, f"{BACKEND_URL}{path}", timeout=_REQUEST_TIMEOUT, **kwargs)
+    if resp.is_error:
+        detail = ""
+        try:
+            detail = resp.json().get("detail", "")
+        except Exception:
+            pass
+        raise RuntimeError(f"backend returned {resp.status_code}: {detail}")
+    return resp.json()
+
+
 def _classify_image(args: dict[str, Any]) -> dict[str, Any]:
-    """POST /api/v1/predict (multipart form: image=<file>)."""
-    raise NotImplementedError("Step 6: httpx call to POST /api/v1/predict")
+    """POST /api/v1/predict — multipart form with the image file."""
+    image_path = args.get("image_path")
+    if not image_path:
+        return {"error": "Missing required argument: image_path"}
+    top_k = args.get("top_k")
+
+    # multipart/form-data, exactly what the endpoint expects:
+    #   image=<file>  (+ optional top_k form field; ignored by the backend
+    #   until it implements top-K selection — harmless to send).
+    with open(image_path, "rb") as fh:
+        files = {"image": (Path(image_path).name, fh)}
+        data = {"top_k": str(top_k)} if top_k else None
+        return _request_json("POST", "/api/v1/predict", files=files, data=data)
 
 
 def _get_prediction_history(args: dict[str, Any]) -> dict[str, Any]:
     """GET /api/v1/predictions?limit={limit} (default 5)."""
-    raise NotImplementedError("Step 6: httpx call to GET /api/v1/predictions")
+    limit = args.get("limit", 5)
+    return _request_json("GET", "/api/v1/predictions", params={"limit": limit})
 
 
 def _get_prediction_by_id(args: dict[str, Any]) -> dict[str, Any]:
     """GET /api/v1/predictions/{prediction_id}."""
-    raise NotImplementedError("Step 6: httpx call to GET /api/v1/predictions/{id}")
+    prediction_id = args.get("prediction_id")
+    if prediction_id is None:
+        return {"error": "Missing required argument: prediction_id"}
+    return _request_json("GET", f"/api/v1/predictions/{prediction_id}")
 
 
 def _get_prediction_statistics(args: dict[str, Any]) -> dict[str, Any]:
     """GET /api/v1/stats."""
-    raise NotImplementedError("Step 6: httpx call to GET /api/v1/stats")
+    return _request_json("GET", "/api/v1/stats")
 
 
 def _get_model_info(args: dict[str, Any]) -> dict[str, Any]:
     """GET /api/v1/model."""
-    raise NotImplementedError("Step 6: httpx call to GET /api/v1/model")
+    return _request_json("GET", "/api/v1/model")
 
 
 _HANDLERS: dict[str, Callable[[dict[str, Any]], dict[str, Any]]] = {
