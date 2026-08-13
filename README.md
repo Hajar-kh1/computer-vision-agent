@@ -3,8 +3,7 @@
 > Weekly group project: build and deploy a **production-oriented AI application**
 > that classifies images of shipping packages as **damaged** or **undamaged**
 > and exposes the model through a real software system.
->
-> Spec: `weekly_cv_production_agent_projectweek.md` (instructor brief).
+
 
 ## Project Overview (TODO — fill in)
 
