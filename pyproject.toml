@@ -10,10 +10,15 @@ description = "Production Computer Vision Agent — package damage classificatio
 readme = "README.md"
 requires-python = ">=3.11,<3.13"   # torch needs a supported interpreter; keep in sync with Dockerfiles
 dependencies = [
+    "matplotlib>=3.11.1",
+    "pillow>=12.3.0",
     # TODO (spec §24): fill in with `uv add` instead of editing by hand:
     #   uv add fastapi uvicorn sqlalchemy psycopg[binary] pydantic-settings \
     #       python-multipart pillow opencv-python-headless torch torchvision \
     #       openai pytest httpx
+    "scikit-learn>=1.9.0",
+    "torch>=2.13.0",
+    "torchvision>=0.28.0",
 ]
 
 [tool.uv]

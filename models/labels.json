@@ -1,4 +1,6 @@
 {
-  "0": "damaged",
-  "1": "undamaged"
+  "0": "Box",
+  "1": "Box_broken",
+  "2": "Open_package",
+  "3": "Package"
 }

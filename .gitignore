@@ -15,11 +15,14 @@ data/raw/*
 data/processed/*
 !data/raw/.gitkeep
 !data/processed/.gitkeep
-models/*.pt
 models/*.onnx
 !models/.gitkeep
 training/runs/
-reports/
+
+reports/*
+!reports/model_metrics.json
+!reports/confusion_matrix.png
+!reports/training_history.json
 
 # ── Frontend / Node ──────────────────────────────────────────────────────────
 node_modules/

@@ -1,49 +1,82 @@
-# Dataset — Package Damage Classification
+# Package Detection Dataset
 
-> TODO: document your dataset here (spec §9). The instructor checks that the
-> dataset is documented, split correctly, and free of leakage (spec §10, §43-A).
+## Dataset Information
 
-## Dataset Name
-<!-- e.g. "Package Damage" (Kaggle) or a Roboflow project -->
+- Name: Package Detection v6
+- Source: Roboflow Universe
+- URL: https://universe.roboflow.com/roboflow-ngkro/package-detection-e1ssd
+- Export date: February 12, 2024
+- Original format: COCO Object Detection
+- Total images: 1,200
+- Image size: 640 × 640 pixels
+- License: Not specified by the dataset provider
 
-## Source
-<!-- URL + how to download. Suggested public sources:
-  - Kaggle: search "package damage" (damaged vs undamaged boxes)
-  - Roboflow Universe: search "package damage"
-  - Your own photos of boxes (small, class-balanced)
--->
+## Classes
 
-## Contents
-| Field | Value |
-|---|---|
-| Number of images | |
-| Number of classes | 2 (damaged / undamaged) |
-| Images per class | |
-| Image dimensions | |
-| Class imbalance | |
-| License | |
+The usable classes are:
 
-## Class Labels
-The model must output exactly these labels (also mirrored in `models/labels.json`):
+1. Box
+2. Box_broken
+3. Open_package
+4. Package
 
-```json
-{"0": "damaged", "1": "undamaged"}
-```
+The COCO file also contains a category named `exp3`, but it has zero annotations and is ignored.
 
-## Expected Folder Layout
-After running `training/download_dataset.py`, the split should be produced under `data/processed/`:
+## Dataset Split
 
-```text
-data/processed/
-├── train/{damaged,undamaged}/
-├── val/{damaged,undamaged}/
-└── test/{damaged,undamaged}/
-```
+| Split | Total images | Single-class images | Multi-class images |
+|---|---:|---:|---:|
+| Train | 840 | 835 | 5 |
+| Validation | 240 | 239 | 1 |
+| Test | 120 | 119 | 1 |
+| Total | 1,200 | 1,193 | 7 |
 
-## Split (spec §10)
-- Training 70% / Validation 15% / Test 15%  (or 80/10/10)
-- Fixed random seed: `SEED = 42`
-- Split by image (no duplicates across splits) to avoid data leakage.
+## Class Distribution
 
-## Example Images
-<!-- add 2–3 example image paths here -->
+### Training
+
+| Class | Images |
+|---|---:|
+| Box | 208 |
+| Box_broken | 203 |
+| Open_package | 218 |
+| Package | 206 |
+
+### Validation
+
+| Class | Images |
+|---|---:|
+| Box | 64 |
+| Box_broken | 63 |
+| Open_package | 54 |
+| Package | 58 |
+
+### Testing
+
+| Class | Images |
+|---|---:|
+| Box | 25 |
+| Box_broken | 32 |
+| Open_package | 29 |
+| Package | 33 |
+
+## Preprocessing Applied by Roboflow
+
+- Auto-orientation with EXIF orientation removed
+- Images resized to 640 × 640 using stretch resizing
+- No image augmentation was applied
+
+## Classification Conversion
+
+The dataset was originally exported for object detection. For this project,
+it will be converted to single-label image classification.
+
+Images containing exactly one unique category will be used. Seven images
+containing objects from more than one category will be excluded to avoid
+assigning an ambiguous label.
+
+Multiple objects of the same category in one image are treated as one
+classification label.
+
+The original train, validation, and test splits will be preserved to avoid
+data leakage.

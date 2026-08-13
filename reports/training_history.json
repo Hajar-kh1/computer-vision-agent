@@ -1,0 +1,52 @@
+{
+  "model_name": "mobilenet_v3_small",
+  "model_version": "1.0.0",
+  "device": "cpu",
+  "epochs": 5,
+  "batch_size": 32,
+  "learning_rate": 0.001,
+  "training_time_seconds": 73.4700888999505,
+  "best_validation_accuracy": 0.9288702928870293,
+  "history": [
+    {
+      "epoch": 1,
+      "training_loss": 0.762609252815475,
+      "validation_loss": 0.48613211512565613,
+      "training_accuracy": 0.7173652694610778,
+      "validation_accuracy": 0.8577405857740585,
+      "epoch_seconds": 15.739739699987695
+    },
+    {
+      "epoch": 2,
+      "training_loss": 0.3667154222012994,
+      "validation_loss": 0.37361846695884005,
+      "training_accuracy": 0.8850299401197604,
+      "validation_accuracy": 0.8619246861924686,
+      "epoch_seconds": 14.546332799945958
+    },
+    {
+      "epoch": 3,
+      "training_loss": 0.24678187737921756,
+      "validation_loss": 0.2986047010416765,
+      "training_accuracy": 0.918562874251497,
+      "validation_accuracy": 0.9079497907949791,
+      "epoch_seconds": 14.453606799943373
+    },
+    {
+      "epoch": 4,
+      "training_loss": 0.23877635905128752,
+      "validation_loss": 0.3738204540069133,
+      "training_accuracy": 0.9125748502994012,
+      "validation_accuracy": 0.899581589958159,
+      "epoch_seconds": 14.538502899929881
+    },
+    {
+      "epoch": 5,
+      "training_loss": 0.2435809233945287,
+      "validation_loss": 0.2371425378023331,
+      "training_accuracy": 0.9173652694610779,
+      "validation_accuracy": 0.9288702928870293,
+      "epoch_seconds": 14.099008799996227
+    }
+  ]
+}
