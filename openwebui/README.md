@@ -34,7 +34,7 @@ User -> Open WebUI -> LLM -> Tool Call -> FastAPI -> Model / PostgreSQL
 Try in chat:
 - "Show me the latest three predictions."      → calls get_prediction_history
 - "Which model is currently deployed?"          → calls get_model_info
-- "How many images were classified as damaged?" → calls get_prediction_statistics
+- "How many images were classified as Box_broken?" → calls get_prediction_statistics
 
 ## Voice (stretch, spec §21)
 Open WebUI ships browser-based speech-to-text and text-to-speech. Enable
