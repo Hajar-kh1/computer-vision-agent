@@ -9,13 +9,13 @@
   ],
   "input_size": 224,
   "test_images": 119,
-  "test_loss": 0.22418452160699026,
-  "test_accuracy": 0.9159663865546218,
-  "weighted_precision": 0.9210114967781117,
-  "weighted_recall": 0.9159663865546218,
-  "weighted_f1_score": 0.9165139181845154,
-  "best_validation_accuracy": 0.9288702928870293,
-  "training_time_seconds": 73.4700888999505,
+  "test_loss": 0.2189021871871307,
+  "test_accuracy": 0.9243697478991597,
+  "weighted_precision": 0.9309832745358679,
+  "weighted_recall": 0.9243697478991597,
+  "weighted_f1_score": 0.9250107886291772,
+  "best_validation_accuracy": 0.9121338912133892,
+  "training_time_seconds": 42.680590655999936,
   "confusion_matrix": [
     [
       24,
@@ -37,9 +37,9 @@
     ],
     [
       0,
+      0,
       1,
-      1,
-      31
+      32
     ]
   ]
 }
