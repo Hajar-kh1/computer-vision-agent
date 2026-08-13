@@ -56,9 +56,9 @@ TOOLS: list[dict[str, Any]] = [
             "description": (
                 "Run an image of a shipping package through the deployed "
                 "computer vision model and return the predicted class "
-                "(damaged or undamaged), the confidence score, the top-K "
-                "predictions and the inference latency. Use this whenever "
-                "the user asks to classify or check an image."
+                "(Box, Box_broken, Open_package or Package), the confidence "
+                "score, the top-K predictions and the inference latency. "
+                "Use this whenever the user asks to classify or check an image."
             ),
             "parameters": {
                 "type": "object",
@@ -131,7 +131,7 @@ TOOLS: list[dict[str, Any]] = [
             "name": "get_prediction_statistics",
             "description": (
                 "Retrieve aggregated statistics over all stored predictions: "
-                "total count, per-class distribution (damaged / undamaged) "
+                "total count, per-class distribution across the four classes "
                 "and average confidence. Use this for 'how many', 'which "
                 "class is most common' or 'average confidence' questions."
             ),
