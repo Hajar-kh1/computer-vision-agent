@@ -1,6 +1,11 @@
-"""Tool 5 — get_model_info (spec §17).
+"""Tool 5 — get_model_info (spec §17)."""
 
-TODO:
-- Return ModelInfoResponse: model_name, version, classes, input size,
-  metrics, deployment status.
-"""
+from backend.app.api.model_info import model_info
+
+
+def get_model_info() -> dict:
+    """Return deployed model details (name, version, classes, metrics)."""
+    try:
+        return model_info().model_dump()
+    except Exception as exc:  # noqa: BLE001 — tools never raise (spec §18)
+        return {"error": f"could not load model info: {exc}"}
