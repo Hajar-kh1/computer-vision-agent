@@ -13,6 +13,8 @@ services:
       POSTGRES_PASSWORD: cvpassword   # TODO: use a strong production password
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    ports:
+    - "5433:5432"
     # TODO: add healthcheck (pg_isready) so backend waits for a ready DB
     # Do NOT publish ports to the host in production (spec §34: don't expose PostgreSQL publicly).
 
@@ -47,30 +49,10 @@ services:
       # Point Open WebUI at your LLM provider here (spec §20)
       OPENAI_API_BASE_URL: ${LLM_BASE_URL:-}
       OPENAI_API_KEY: ${LLM_API_KEY:-}
-      # Auto-create the admin account on first boot (no manual signup)
-      WEBUI_ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@example.com}
-      WEBUI_ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin123}
     volumes:
       - open_webui_data:/app/backend/data
     ports:
       - "8080:8080"
-
-  # One-shot seeder: configures the Open WebUI connection, tool and model
-  # from env + the repo files, so a fresh clone needs zero UI setup.
-  open-webui-init:
-    image: ghcr.io/open-webui/open-webui:main
-    entrypoint: ["python", "/app/openwebui-seed/seed_openwebui.py"]
-    volumes:
-      - open_webui_data:/app/backend/data
-      - ./openwebui:/app/openwebui-seed:ro
-    environment:
-      LLM_API_KEY: ${LLM_API_KEY:-}
-      LLM_BASE_URL: ${LLM_BASE_URL:-}
-      LLM_MODEL: ${LLM_MODEL:-}
-    depends_on:
-      open-webui:
-        condition: service_healthy
-    restart: "no"
 
 volumes:
   postgres_data:
