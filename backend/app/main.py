@@ -15,7 +15,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from backend.app.api import health, history, model_info, predictions, stats
+from backend.app.api import chat, health, history, model_info, predictions, stats
 from backend.app.config import settings
 from backend.app.database import init_db
 from backend.app.services import inference as inference_service
@@ -69,6 +69,7 @@ app.include_router(predictions.router, prefix="/api/v1")
 app.include_router(history.router, prefix="/api/v1")
 app.include_router(stats.router, prefix="/api/v1")
 app.include_router(model_info.router, prefix="/api/v1")
+app.include_router(chat.router, prefix="/api/v1")
 
 
 # --- Global exception handlers (spec §33: clean errors, no tracebacks) ------

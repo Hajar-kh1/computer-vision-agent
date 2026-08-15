@@ -12,18 +12,21 @@ application's real tools.
 - [ ] Demonstrate the tool response comes from the deployed system
 
 ## How Open WebUI calls your tools
-Open WebUI implements tools as **Functions** (Python files in its "Workspace →
-Functions" UI). Each function must export a `tools` list of dicts with
-`name`, `description`, and `parameters`, plus a callable with that name that
-runs when the LLM invokes the tool.
+Open WebUI implements tools as **Tools** (Python files in its "Workspace →
+Tools" UI — newer versions renamed Functions to Tools). This Open WebUI
+build requires a class named `Tools` in the file: every public method of
+that class becomes a tool. The method's docstring becomes the tool
+description (`:param:` lines become parameter descriptions) and its type
+hints the parameter schema. The file contains no third-party imports.
 
-The function runs INSIDE the Open WebUI container, so it must call your
+The tool runs INSIDE the Open WebUI container, so it must call your
 backend over HTTP (e.g. `http://backend:8000/api/v1/...` using Docker's
 service name — spec §29) or via a public URL in production.
 
 ## Files
-- `openwebui/package_damage_tools.py` — stub Function file: paste its contents
-  into Open WebUI → Workspace → Functions and enable it.
+- `openwebui/package_damage_tools.py` — paste its contents into
+  Open WebUI → Workspace → Tools (create new tool) and save. Then attach it
+  to the model: Admin Panel → Models → (model) → Tools → enable it.
 
 ## Flow to verify (spec §20)
 ```

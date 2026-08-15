@@ -11,6 +11,7 @@ Base URL: `http://localhost:8000` (local) — Swagger UI at `/docs`.
 | GET | `/api/v1/predictions?limit=20` | Prediction history (newest first) |
 | GET | `/api/v1/predictions/{prediction_id}` | Single stored prediction |
 | GET | `/api/v1/stats` | total_predictions, class_distribution, avg_confidence |
+| POST | `/api/v1/chat` | Agent chat: `{"message": "..."}` → `{"reply": "..."}` (same tools as Open WebUI) |
 
 ## Standard prediction response (keep this contract stable)
 ```json
