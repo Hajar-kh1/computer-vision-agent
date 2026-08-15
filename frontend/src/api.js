@@ -41,3 +41,20 @@ export async function getModelInfo() {
   if (!res.ok) throw new Error(`Model info failed: ${res.status}`)
   return res.json()
 }
+
+export async function chat(message) {
+  const res = await fetch('/api/v1/chat', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message }),
+  })
+  if (!res.ok) {
+    let detail = `Chat failed: ${res.status}`
+    try {
+      const body = await res.json()
+      if (body.detail) detail = body.detail
+    } catch { /* keep default */ }
+    throw new Error(detail)
+  }
+  return res.json()
+}
