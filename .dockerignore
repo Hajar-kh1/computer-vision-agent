@@ -1,0 +1,11 @@
+# Keep the Docker build context (repo root) lean.
+.venv/
+__pycache__/
+*.pyc
+.env
+.git/
+data/raw/
+data/processed/
+node_modules/
+frontend/dist/
+.DS_Store

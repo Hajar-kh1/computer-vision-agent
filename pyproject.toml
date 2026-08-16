@@ -1,0 +1,42 @@
+# Package Damage Detection — root Python project (uv-managed)
+# All Python deps (training, backend, agent, tests) live in this one project
+# so that `uv sync` + `uv run` work everywhere. The backend Dockerfile
+# installs from this same pyproject.toml + uv.lock (see backend/Dockerfile).
+
+[project]
+name = "package-damage"
+version = "0.1.0"
+description = "Production Computer Vision Agent — package damage classification (damaged / undamaged)"
+readme = "README.md"
+requires-python = ">=3.11,<3.13"   # torch needs a supported interpreter; keep in sync with Dockerfiles
+dependencies = [
+    "matplotlib>=3.11.1",
+    "pillow>=12.3.0",
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.30.0",
+    "sqlalchemy>=2.0.30",
+    "psycopg[binary]>=3.2.0",
+    "pydantic-settings>=2.4.0",
+    "python-multipart>=0.0.9",
+    "opencv-python-headless>=4.10.0",
+    "openai>=1.40.0",
+    "httpx>=0.27.0",
+    "scikit-learn>=1.9.0",
+    "torch>=2.13.0",
+    "torchvision>=0.28.0",
+    "python-dotenv>=1.2.2",
+    "groq>=1.6.0",
+    "langfuse>=4.14.4",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0.0",
+]
+
+[tool.uv]
+# optional: [tool.uv.sources] overrides go here
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

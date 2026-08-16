@@ -1,0 +1,45 @@
+{
+  "model_name": "mobilenet_v3_small",
+  "model_version": "1.0.0",
+  "classes": [
+    "Box",
+    "Box_broken",
+    "Open_package",
+    "Package"
+  ],
+  "input_size": 224,
+  "test_images": 119,
+  "test_loss": 0.2189021871871307,
+  "test_accuracy": 0.9243697478991597,
+  "weighted_precision": 0.9309832745358679,
+  "weighted_recall": 0.9243697478991597,
+  "weighted_f1_score": 0.9250107886291772,
+  "best_validation_accuracy": 0.9121338912133892,
+  "training_time_seconds": 42.680590655999936,
+  "confusion_matrix": [
+    [
+      24,
+      0,
+      0,
+      1
+    ],
+    [
+      4,
+      28,
+      0,
+      0
+    ],
+    [
+      1,
+      0,
+      26,
+      2
+    ],
+    [
+      0,
+      0,
+      1,
+      32
+    ]
+  ]
+}
