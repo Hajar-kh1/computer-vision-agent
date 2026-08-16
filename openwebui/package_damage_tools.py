@@ -105,10 +105,13 @@ class Tools:
         :param top_k: How many top predictions to return (default 2).
         :return: JSON with predicted_class, confidence, top_predictions, inference_ms, model_version.
         """
-        path = image_path
-        if not path and __files__:
-            # Chat-attached image: Open WebUI injects the file list here.
+        path = ""
+        if __files__:
+            # The user attached an image — that file is ground truth; ignore
+            # any path the model may have guessed (it often invents one).
             path = _resolve_attached_image(__files__)
+        if not path:
+            path = image_path
         if not path:
             return json.dumps({"error": "classify_image needs an image — attach one to the chat or provide image_path"})
         try:

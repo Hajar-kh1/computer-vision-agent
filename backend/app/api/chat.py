@@ -18,6 +18,9 @@ from backend.app.config import settings
 os.environ.setdefault("LLM_API_KEY", settings.LLM_API_KEY)
 os.environ.setdefault("LLM_BASE_URL", settings.LLM_BASE_URL)
 os.environ.setdefault("LLM_MODEL", settings.LLM_MODEL)
+os.environ.setdefault("LANGFUSE_PUBLIC_KEY", settings.LANGFUSE_PUBLIC_KEY)
+os.environ.setdefault("LANGFUSE_SECRET_KEY", settings.LANGFUSE_SECRET_KEY)
+os.environ.setdefault("LANGFUSE_HOST", settings.LANGFUSE_HOST)
 
 from agent.agent import run_agent  # noqa: E402  (needs env set above)
 
