@@ -36,15 +36,34 @@ LLM_API_KEY = os.getenv("LLM_API_KEY", "")
 LLM_BASE_URL = os.getenv("LLM_BASE_URL", "https://api.groq.com/openai/v1")
 LLM_MODEL = os.getenv("LLM_MODEL", "llama-3.3-70b-versatile")
 
+# LangFuse LLM observability (tracing, tokens, latency, cost). Optional:
+# when both keys are set, every LLM call in the agent loop is traced.
+LANGFUSE_PUBLIC_KEY = os.getenv("LANGFUSE_PUBLIC_KEY", "")
+LANGFUSE_SECRET_KEY = os.getenv("LANGFUSE_SECRET_KEY", "")
+LANGFUSE_HOST = os.getenv("LANGFUSE_HOST", "https://cloud.langfuse.com")
+
 MAX_TOOL_ROUNDS = 5  # hard cap: an agent that never stops calling tools is a bug
 
 
 def get_client() -> OpenAI:
-    """Return an OpenAI-compatible client for the configured provider."""
+    """Return an OpenAI-compatible client for the configured provider.
+
+    When LangFuse is configured (LANGFUSE_PUBLIC_KEY + LANGFUSE_SECRET_KEY),
+    the client is wrapped with LangFuse's OpenAI integration, so each
+    chat.completions.create call is traced automatically: input/output,
+    tool calls, token counts, latency and cost.
+    """
     if not LLM_API_KEY:
         raise RuntimeError(
             "LLM_API_KEY is not set. Add it to .env or export it "
             "(e.g. python -m agent.agent ...)."
+        )
+    if LANGFUSE_PUBLIC_KEY and LANGFUSE_SECRET_KEY:
+        from langfuse.openai import OpenAI as LangfuseOpenAI
+
+        return LangfuseOpenAI(
+            api_key=LLM_API_KEY,
+            base_url=LLM_BASE_URL,
         )
     return OpenAI(api_key=LLM_API_KEY, base_url=LLM_BASE_URL)
 
