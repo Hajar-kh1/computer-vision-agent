@@ -1,5 +1,5 @@
 # Docker Compose — full stack (spec §25, §27, §29)
-# Services: postgres, backend, frontend, open-webui
+# Services: postgres, backend, frontend, open-webui (+ one-shot seeder)
 # Containers talk to each other using Docker service names (e.g. postgres:5432),
 # never localhost.
 
@@ -13,7 +13,8 @@ services:
       POSTGRES_PASSWORD: cvpassword   # TODO: use a strong production password
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    # TODO: add healthcheck (pg_isready) so backend waits for a ready DB
+    ports:
+      - "5433:5432"   # host access for development (e.g. DBeaver/psql)
     # Do NOT publish ports to the host in production (spec §34: don't expose PostgreSQL publicly).
 
   backend:
