@@ -180,8 +180,7 @@ This makes it possible to inspect how the agent processes a request and which to
 ### Computer Vision
 
 - MobileNetV3 Small
-- PyTorch
-- Torchvision
+- keras
 
 ### LLM and Agent
 
@@ -240,27 +239,6 @@ computer-vision-agent/
 |-- .env.example
 `-- README.md
 ```
-
----
-
-## Environment Variables
-
-Create a `.env` file in the project root.
-
-```env
-LLM_API_KEY=
-LLM_BASE_URL=https://api.groq.com/openai/v1
-LLM_MODEL=
-
-LANGFUSE_PUBLIC_KEY=
-LANGFUSE_SECRET_KEY=
-LANGFUSE_BASE_URL=https://cloud.langfuse.com
-```
-
-Do not commit the `.env` file or API keys to GitHub.
-
----
-
 ## Running the Project
 
 ### Docker Compose
@@ -302,60 +280,6 @@ http://localhost:8000/docs
 ```bash
 docker compose down
 ```
-
----
-
-## Agent CLI
-
-The agent can also be tested directly from the command line.
-
-Example:
-
-```bash
-uv run python -m agent.agent "What model is deployed?"
-```
-
-Another example:
-
-```bash
-uv run python -m agent.agent "Show me the latest 3 predictions"
-```
-
----
-
-## Example Voice Interaction
-
-The user can press the microphone button and say:
-
-```text
-Show me the latest three predictions.
-```
-
-or in Arabic:
-
-```textاعرض لي آخر ثلاث توقعات```
-
-The system performs:
-
-```text
-Voice
- |
-Whisper
- |
-Transcription
- |
-Agent
- |
-Tool Call
- |
-Backend
- |
-Response
-```
-
-The command is automatically sent to the agent after transcription.
-
----
 
 ## Monitoring
 
